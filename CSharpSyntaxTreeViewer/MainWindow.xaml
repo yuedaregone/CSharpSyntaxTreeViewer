@@ -1,0 +1,218 @@
+<Window x:Class="CSharpSyntaxTreeViewer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CSharpSyntaxTreeViewer"
+        mc:Ignorable="d"
+        Title="C# Syntax Tree Viewer" Height="600" Width="1000"
+        Background="#1e1e1e">
+    <Window.Resources>
+        <!-- 暗黑风格的颜色定义 -->
+        <SolidColorBrush x:Key="DarkBackgroundBrush" Color="#1e1e1e"/>
+        <SolidColorBrush x:Key="DarkForegroundBrush" Color="#ffffff"/>
+        <SolidColorBrush x:Key="DarkPanelBrush" Color="#2d2d30"/>
+        <SolidColorBrush x:Key="DarkControlBrush" Color="#333337"/>
+        <SolidColorBrush x:Key="DarkControlHoverBrush" Color="#3f3f46"/>
+        <SolidColorBrush x:Key="DarkControlPressedBrush" Color="#007acc"/>
+        <SolidColorBrush x:Key="DarkBorderBrush" Color="#3f3f46"/>
+        <SolidColorBrush x:Key="DarkHighlightBrush" Color="#007acc"/>
+        
+        <!-- 按钮样式 -->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource DarkControlBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkForegroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource DarkBorderBrush}"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="0,0,10,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource DarkControlHoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" Value="{StaticResource DarkControlPressedBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- 标签样式 -->
+        <Style TargetType="Label">
+            <Setter Property="Foreground" Value="{StaticResource DarkForegroundBrush}"/>
+        </Style>
+        
+        <!-- TreeView样式 -->
+        <Style TargetType="TreeView">
+            <Setter Property="Background" Value="{StaticResource DarkPanelBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource DarkBorderBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkForegroundBrush}"/>
+        </Style>
+        
+        <!-- TreeViewItem样式 -->
+        <Style TargetType="TreeViewItem">
+            <Setter Property="Foreground" Value="{StaticResource DarkForegroundBrush}"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource DarkHighlightBrush}"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource DarkControlHoverBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!-- DataGrid样式 -->
+        <Style TargetType="DataGrid">
+            <Setter Property="Background" Value="{StaticResource DarkPanelBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource DarkBorderBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkForegroundBrush}"/>
+            <Setter Property="RowBackground" Value="{StaticResource DarkPanelBrush}"/>
+            <Setter Property="AlternatingRowBackground" Value="{StaticResource DarkControlBrush}"/>
+            <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource DarkBorderBrush}"/>
+            <Setter Property="VerticalGridLinesBrush" Value="{StaticResource DarkBorderBrush}"/>
+        </Style>
+        
+        <!-- DataGridCell样式 -->
+        <Style TargetType="DataGridCell">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkForegroundBrush}"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="{StaticResource DarkHighlightBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        
+        <!-- DataGridColumnHeader样式 -->
+        <Style TargetType="DataGridColumnHeader">
+            <Setter Property="Background" Value="{StaticResource DarkControlBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkForegroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource DarkBorderBrush}"/>
+        </Style>
+        
+        <!-- ProgressBar样式 -->
+        <Style TargetType="ProgressBar">
+            <Setter Property="Background" Value="{StaticResource DarkControlBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource DarkBorderBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkHighlightBrush}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Grid x:Name="TemplateRoot">
+                            <Border Background="{TemplateBinding Background}" 
+                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}"/>
+                            <Rectangle x:Name="PART_Track"/>
+                            <Grid x:Name="PART_Indicator" 
+                                  HorizontalAlignment="Left" 
+                                  ClipToBounds="True">
+                                <Border x:Name="Indicator" 
+                                        Background="{TemplateBinding Foreground}"/>
+                                <Border x:Name="Animation" 
+                                        Background="{TemplateBinding Foreground}" 
+                                        RenderTransformOrigin="0.5,0.5">
+                                    <Border.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform/>
+                                            <SkewTransform/>
+                                            <RotateTransform/>
+                                            <TranslateTransform/>
+                                        </TransformGroup>
+                                    </Border.RenderTransform>
+                                </Border>
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <!-- ScrollBar样式 -->
+        <Style TargetType="ScrollBar">
+            <Setter Property="Background" Value="{StaticResource DarkControlBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource DarkBorderBrush}"/>
+        </Style>
+        
+        <!-- ScrollViewer样式 -->
+        <Style TargetType="ScrollViewer">
+            <Setter Property="Background" Value="{StaticResource DarkBackgroundBrush}"/>
+        </Style>
+        
+        <!-- TextBox样式 -->
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="{StaticResource DarkControlBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkForegroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource DarkBorderBrush}"/>
+        </Style>
+        
+        <!-- ComboBox样式 -->
+        <Style TargetType="ComboBox">
+            <Setter Property="Background" Value="{StaticResource DarkControlBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource DarkForegroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource DarkBorderBrush}"/>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Background="{StaticResource DarkBackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="10" Background="{StaticResource DarkPanelBrush}">
+            <Button x:Name="OpenFileButton" Content="打开文件" Click="OpenFileButton_Click" Margin="10"/>
+        </StackPanel>
+
+        <!-- TreeView for syntax tree -->
+        <TreeView x:Name="SyntaxTreeView" Grid.Column="0" Grid.Row="1" Margin="10" SelectedItemChanged="SyntaxTreeView_SelectedItemChanged">
+        </TreeView>
+
+        <!-- Property grid for node details -->
+        <Grid Grid.Column="1" Grid.Row="1" Margin="10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Label Content="Node Properties" FontWeight="Bold" FontSize="16"/>
+            <DataGrid x:Name="PropertiesDataGrid" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True" 
+                  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto"
+                  HeadersVisibility="Column" GridLinesVisibility="Horizontal">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Property" Binding="{Binding Key}" Width="*" CanUserSort="False">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextWrapping" Value="NoWrap"/>
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                    <DataGridTextColumn Header="Value" Binding="{Binding Value}" Width="*" CanUserSort="False">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="TextWrapping" Value="NoWrap"/>
+                                <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+                            </Style>
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</Window>
