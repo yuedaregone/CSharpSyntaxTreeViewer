@@ -351,6 +351,8 @@ namespace CSharpSyntaxTreeViewer
             }
         }
 
+        private static readonly char[] _lineTag = ['\r', '\n'];
+
         /// <summary>
         /// 截断过长的文本，只保留指定长度并添加省略号
         /// </summary>
@@ -361,6 +363,12 @@ namespace CSharpSyntaxTreeViewer
         {
             if (string.IsNullOrEmpty(text) || text.Length <= maxLength)
                 return text;
+
+            var index = text.IndexOfAny(_lineTag);
+            if (index != -1)
+            {
+                maxLength = Math.Min(index, maxLength);
+            }
 
             return text.Substring(0, maxLength) + "...";
         }
