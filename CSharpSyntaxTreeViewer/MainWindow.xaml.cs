@@ -35,15 +35,48 @@ namespace CSharpSyntaxTreeViewer
                 if (openFileDialog.ShowDialog() == true)
                 {
                     _currentFilePath = openFileDialog.FileName;
-                    var code = File.ReadAllText(_currentFilePath);
-                    var root = _parser.ParseCode(code);
-                    DisplaySyntaxTree(root);
+                    RefreshSyntaxTree();
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(
                     $"打开文件时出错: {ex.Message}\n{ex.StackTrace}",
+                    "错误",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+            }
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshSyntaxTree();
+        }
+
+        private void RefreshSyntaxTree()
+        {
+            if (string.IsNullOrEmpty(_currentFilePath) || !File.Exists(_currentFilePath))
+            {
+                MessageBox.Show(
+                    "请先打开一个文件",
+                    "提示",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information
+                );
+                return;
+            }
+
+            try
+            {
+                var code = File.ReadAllText(_currentFilePath);
+                var root = _parser.ParseCode(code);
+                DisplaySyntaxTree(root);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"刷新语法树时出错: {ex.Message}\n{ex.StackTrace}",
                     "错误",
                     MessageBoxButton.OK,
                     MessageBoxImage.Error

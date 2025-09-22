@@ -178,6 +178,7 @@
         <!-- Toolbar -->
         <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="10" Background="{StaticResource DarkPanelBrush}">
             <Button x:Name="OpenFileButton" Content="打开文件" Click="OpenFileButton_Click" Margin="10"/>
+            <Button x:Name="RefreshButton" Content="刷新" Click="RefreshButton_Click" Margin="10"/>
         </StackPanel>
 
         <!-- TreeView for syntax tree -->
